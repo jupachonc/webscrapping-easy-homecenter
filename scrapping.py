@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup as bs
 def homecenter(url):
     r = requests.get(url)
     soup = bs(r.text, "lxml")
-    name = soup.find("h1", class_="jsx-2976215987 product-title").text
-    brand = soup.find("div", class_="jsx-2976215987 product-brand").text
+    name = soup.find("h1", class_="product-title").text
+    brand = soup.find("div", class_="product-brand").text
     price = int(float(soup.find("span", class_="jsx-3655512908").text[1:]) * 1000)
     return {
         "name": name + " " + brand,

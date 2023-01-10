@@ -1,0 +1,12 @@
+version: '3'
+services:
+  runt-api:
+    image: webscrapper
+    container_name: scrapper-api
+    restart: unless-stopped
+    build: .
+    ports: 
+      - '8605:8000'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      
