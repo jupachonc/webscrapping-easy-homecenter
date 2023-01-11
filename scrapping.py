@@ -1,24 +1,38 @@
 import requests
 from bs4 import BeautifulSoup as bs
+from fastapi import HTTPException, status
 
 def homecenter(url):
     r = requests.get(url)
     soup = bs(r.text, "lxml")
     name = soup.find("h1", class_="product-title").text
     brand = soup.find("div", class_="product-brand").text
-    price = int(float(soup.find("span", class_="jsx-3655512908").text[1:]) * 1000)
-    return {
-        "name": name + " " + brand,
-        "price": price
-    }
+    try:
+        raw_price = soup.find("div", class_="pdp-price").find("div").find_all("span")[1]
+        price = int(float(raw_price.text[1:]) * 1000)
+        return {
+            "name": name + " " + brand,
+            "price": price
+        }
+    except:
+        raise HTTPException(
+            status_code = 410,
+            detail = "Site cannnot be scrapped",
+        )
+    
 
 def easy(url):
-    r = requests.get(url)
-    soup = bs(r.text, "lxml")
-    name = soup.find("h1", class_="nombre-prod-detalle").text
-    price = int(float(soup.find(id="itempropprice").text.replace("\n", "").replace(",", ".")[1:]) * 1000)
-
-    return {"name": name, "price": price}
+    try:
+        r = requests.get(url)
+        soup = bs(r.text, "lxml")
+        name = soup.find("h1", class_="nombre-prod-detalle").text
+        price = int(float(soup.find(id="itempropprice").text.replace("\n", "").replace(",", ".")[1:]) * 1000)
+        return {"name": name, "price": price}
+    except:
+        raise HTTPException(
+            status_code = 410,
+            detail = "Site cannnot be scrapped",
+        )
 
 def ironmart(url):
     r = requests.get(url)
