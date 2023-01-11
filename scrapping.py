@@ -3,13 +3,13 @@ from bs4 import BeautifulSoup as bs
 from fastapi import HTTPException, status
 
 def homecenter(url):
-    r = requests.get(url)
-    soup = bs(r.text, "lxml")
-    name = soup.find("h1", class_="product-title").text
-    brand = soup.find("div", class_="product-brand").text
     try:
+        r = requests.get(url)
+        soup = bs(r.text, "lxml")
+        name = soup.find("h1", class_="product-title").text
+        brand = soup.find("div", class_="product-brand").text
         raw_price = soup.find("div", class_="pdp-price").find("div").find_all("span")[1]
-        price = int(float(raw_price.text[1:]) * 1000)
+        price = int(raw_price.text.replace(".", ""))
         return {
             "name": name + " " + brand,
             "price": price
