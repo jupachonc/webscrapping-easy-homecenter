@@ -26,8 +26,12 @@ def easy(url):
         r = requests.get(url)
         soup = bs(r.text, "lxml")
         name = soup.find("h1", class_="nombre-prod-detalle").text
+        brand = soup.find("div", class_="logo-marca").text.strip()
         price = int(float(soup.find(id="itempropprice").text.replace("\n", "").replace(",", ".")[1:]) * 1000)
-        return {"name": name, "price": price}
+        return {
+            "name": name + " " + brand,
+            "price": price
+        }
     except:
         raise HTTPException(
             status_code = 410,
